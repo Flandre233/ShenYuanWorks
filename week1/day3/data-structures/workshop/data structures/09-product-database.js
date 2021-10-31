@@ -20,6 +20,8 @@ const mostExpensive = () => {
   return product
 }
 
+const averagePrice = product => Object.values(product).reduce((p, e) => p + e) / Object.values(product).length
+
 const below = price => Object.keys(map).filter(key => map[key] < price).length
 
 const exactly = price => Object.keys(map).filter(key => map[key] < price)
@@ -37,6 +39,7 @@ const cheapest = () => {
 
 console.log(howMuch('Fish'))
 console.log(mostExpensive())
+console.log(averagePrice())
 console.log(below(300))
 console.log(exactly(125))
 console.log(cheapest())
