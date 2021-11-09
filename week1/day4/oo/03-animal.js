@@ -29,3 +29,7 @@ dog.status()
 console.log('dog drink')
 dog.drink()
 dog.status()
+
+module.exports = {
+  Animal
+}

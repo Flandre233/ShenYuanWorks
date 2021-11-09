@@ -8,3 +8,6 @@ class Sharpie {
     this.inkAmount --
   }
 }
+module.exports = {
+  Sharpie
+}
