@@ -18,16 +18,12 @@ class StringLinkedList implements LinkedList {
   constructor() {}
   add(value: string, index?: number){
     let node
-    if(index && this.getNode(index)) {
+    if(typeof index == 'number' && index >= 0 && this.getNode(index)) {
       node = this.getNode(index)
     } else {
-      if(index == 0) {
-        node = this.head
-      } else {
-        node = this.getNode(this.size())
-      }
+      node = this.getNode(this.size())
     }
-    node?.setNext(new StringLinkedListNode(value, node?.next()))
+    node.setNext(new StringLinkedListNode(value, node.next()))
   }
   getNode(index: number) {
     if(index > 0) {

@@ -1,6 +1,6 @@
-import { Queue } from "./interfaces";
+import { QueueInterface } from "./interfaces";
 
-class StringQueue implements Queue {
+class StringQueue implements QueueInterface {
   constructor(protected queue: string[] = []) {}
   empty(){
     return !(this.queue.length > 0)

@@ -27,8 +27,8 @@ interface Tree {
   search(value: string): boolean
 }
 export {
-  LinkedList,
-  Stack,
-  Queue,
-  Tree
+  LinkedList as LinkedListInterface,
+  Stack as StackInterface,
+  Queue as QueueInterface,
+  Tree as TreeInterface
 }

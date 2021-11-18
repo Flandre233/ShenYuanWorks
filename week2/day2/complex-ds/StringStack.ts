@@ -1,6 +1,6 @@
-import { Stack } from "./interfaces";
+import { StackInterface } from "./interfaces";
 
-class StringStack implements Stack {
+class StringStack implements StackInterface {
   constructor(protected stack: string[] = []) {}
   empty(){
     return !(this.stack.length > 0)

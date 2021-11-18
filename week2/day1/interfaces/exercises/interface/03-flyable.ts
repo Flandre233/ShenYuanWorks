@@ -27,16 +27,4 @@ class Helicopter extends Vehicle implements Flyable {
   }
 }
 
-const flyableMixin = Base => class extends Base{
-  land() {
-
-  }
-  fly() {
-    return 'fly'
-  }
-  takeOff() {
-
-  }
-}
-
-export { Flyable }
+export { Flyable, Helicopter }
