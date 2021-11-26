@@ -13,6 +13,7 @@ https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/in
 ## week2
 ### day1
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/typescript-basics
+
 https://github.com/puteulanus/ShenYuanLearning/blob/master/teaching-materials/interfaces/ts.md
 ### day2
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/complex-ds
@@ -26,6 +27,7 @@ https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/es
 ## week3
 ### day1 HTML CSS 和 表单入门
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/html-css-intro
+
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/forms/js.md
 ### day2 CSS 布局深入
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/layout
@@ -37,4 +39,18 @@ https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/ev
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/xhr 
 ### day6 promise 和 async await 语法糖，迭代器
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/promise-and-fetch
+
 https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/async-generator
+
+## week4
+### day1
+
+### day2
+https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/routing-css
+### day3
+https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/hooks-lifecycle
+
+https://juejin.cn/post/6844903806090608647
+
+### day4
+https://github.com/puteulanus/ShenYuanLearning/tree/master/teaching-materials/gallery
