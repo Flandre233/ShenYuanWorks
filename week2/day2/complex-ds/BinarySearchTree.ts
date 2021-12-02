@@ -3,87 +3,111 @@ import { TreeInterface } from "./interfaces"
 
 class BinarySearchTree implements TreeInterface {
   public root: Node | null = null
+  private subTreeTypeList: string[] = []
+  pushType(type: string) {
+    this.subTreeTypeList.unshift(type)
+    if(this.subTreeTypeList.length > 2)
+      this.subTreeTypeList.pop()
+  }
   empty() {
     return !Boolean(this.root)
   }
   add(value: string) {
+    console.log('=========== INSERT START =============')
+    console.log(`Inserting: ${value}`)
+    this.subTreeTypeList = []
     if(this.root) {
-      let type = this.insert(value, this.root)
-      console.log('============ type =============')
-      console.log(type)
+      this.insert(value, this.root)()
     } else {
       this.root = new Node(value)
     }
+    console.log('=========== INSERT END =============\n')
   }
-  insert(value: string, node: Node): string {
-    let type = ''
+  insert(value: string, node: Node) {
+    let self = this
+    let type: string
     if(parseInt(value) < parseInt(node.value)) {
+      type = 'L'
+      console.log(`${value} < ${node.value}. Looking at left subtree`)
       if(node.left) {
-        type = this.insert(value, node.left)
-        if(type.length == 1) {
-          type = `L${type}`
-        }
-        console.log(`===>[${node.value}] ${this.getNodeDepth(node.left)}, ${this.getNodeDepth(node.right)}`)
-        if(Math.abs(this.getNodeDepth(node.left) - this.getNodeDepth(node.right)) > 1) {
-          console.log('===== target node =====')
-          console.log(node.value)
-          this.rotateTree(type, node)
-        }
+        this.insert(value, node.left)()
       } else {
-        node.left = new Node(value, null, null, node)
-        type = 'L'
+        console.log('Found null tree, inserting element')
+        node.left = new Node(value)
       }
     } else {
+      type = 'R'
+      console.log(`${value} >= ${node.value}. Looking at right subtree`)
       if(node.right) {
-        type = this.insert(value, node.right)
-        if(type.length == 1) {
-          type = `R${type}`
-        }
-        console.log(`===>[${node.value}] ${this.getNodeDepth(node.left)}, ${this.getNodeDepth(node.right)}`)
-        if(Math.abs(this.getNodeDepth(node.left) - this.getNodeDepth(node.right)) > 1) {
-          console.log('===== target node =====')
-          console.log(node.value)
-          this.rotateTree(type, node)
-        }
+        this.insert(value, node.right)()
       } else {
-        node.right = new Node(value, null, null, node)
-        type = 'R'
+        console.log('Found null tree, inserting element')
+        node.right = new Node(value)
       }
     }
-    return type
+    console.log(`Unwinding Recursion`)
+    return function(){
+      self.pushType(type)
+      node.height = self.getNodeDepth(node)
+      console.log(`Adjusting height after recursive call (node ${node.value} height to ${node.height})`)
+      if(Math.abs((node.left?.height || 0) - (node.right?.height || 0)) > 1) {
+        let unbalancedType = self.subTreeTypeList.join('')
+        console.log(`unbalanced tree (root node: ${node.value}, type: ${self.subTreeTypeList.join('')})`)
+        self.treeRebalanced(node, unbalancedType)
+      }
+    }
+  }
+  treeRebalanced(node: Node, type: string) {
+    switch(type) {
+      case 'LL':
+        console.log(`Single Rotate Right`)
+        this.rotateRight(node)
+        break
+      case 'LR':
+        console.log(`Double Rotate Right`)
+        this.rotateLeft(node.left!)
+        this.rotateRight(node)
+        node.height = this.getNodeDepth(node)
+        break
+      case 'RL':
+        console.log(`Double Rotate Left`)
+        this.rotateRight(node.right!)
+        this.rotateLeft(node)
+        node.height = this.getNodeDepth(node)
+        break
+      case 'RR':
+        console.log(`Single Rotate Left`)
+        this.rotateLeft(node)
+        break
+      default:
+        console.log('unknown unbalanced tree')
+    }
+  }
+  rotateLeft(node: Node) {
+    if(this.root == node){
+      this.root = node.right
+    }
+    let tmp = node
+    node = node.right!
+    tmp.right = node.left
+    tmp.height = this.getNodeDepth(tmp)
+    node.left = tmp
+  }
+  rotateRight(node: Node) {
+    if(this.root == node){
+      this.root = node.left
+    }
+    let tmp = node
+    node = node.left!
+    tmp.left = node.right
+    tmp.height = this.getNodeDepth(tmp)
+    node.right = tmp
   }
   getNodeDepth(node: Node|null, depth = 0): number {
     if(node) {
       return Math.max(node.left ? this.getNodeDepth(node.left, depth + 1) : depth + 1, node.right ? this.getNodeDepth(node.right, depth + 1) : depth + 1)
     } else {
       return 0
-    }
-  }
-  rotateTree(type: string, node: Node) {
-    console.log('>>>')
-    console.log(type)
-    console.log(node.value)
-    let tmp
-    switch (type) {
-      case 'LL':
-        if(this.root == node){
-          this.root = node.left
-          node.left!.preNode = null
-        }
-        tmp = node.left!.right
-        node.left!.right = node
-        node.preNode = node.left
-        node.left = tmp
-        break
-      case 'RR':
-        if(this.root == node){
-          this.root = node.right
-          node.right!.preNode = null
-        }
-        tmp = node.right!.left
-        node.right!.left = node
-        node.right = tmp
-        break
     }
   }
   remove(value: string) {
@@ -134,11 +158,52 @@ let bst = new BinarySearchTree()
 
 bst.add('50')
 bst.add('25')
-bst.add('75')
-bst.add('15')
-bst.add('40')
-bst.add('5')
+bst.add('35')
+/*
+   50
+  /
+ 25
+  \
+   35
+
+   50
+  /
+ 35
+ /
+25
+
+   35
+  /  \
+ 25  50
+
+
+*/
+// bst.add('15')
+// bst.add('40')
+// bst.add('5')
+
+
+// bst.add('50')
+// bst.add('60')
+// bst.add('70')
+// bst.add('40')
+// bst.add('55')
+// bst.add('30')
+// bst.add('57')
+// bst.add('56')
+
+
+// bst.add('55')
+// bst.add('57')
+// bst.add('56')
+
+
+// bst.add('50')
+// bst.add('50')
+
+
+
 console.log(bst.root)
-bst.add('1')
-console.log(bst.root)
-console.log(bst.inOrderTraversal())
+// bst.add('1')
+// console.log(bst.root)
+// console.log(bst.inOrderTraversal())
