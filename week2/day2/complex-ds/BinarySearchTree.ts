@@ -3,19 +3,12 @@ import { TreeInterface } from "./interfaces"
 
 class BinarySearchTree implements TreeInterface {
   public root: Node | null = null
-  private subTreeTypeList: string[] = []
-  pushType(type: string) {
-    this.subTreeTypeList.unshift(type)
-    if(this.subTreeTypeList.length > 2)
-      this.subTreeTypeList.pop()
-  }
   empty() {
     return !Boolean(this.root)
   }
   add(value: string) {
     console.log('=========== INSERT START =============')
     console.log(`Inserting: ${value}`)
-    this.subTreeTypeList = []
     if(this.root) {
       this.insert(value, this.root)()
     } else {
@@ -25,9 +18,7 @@ class BinarySearchTree implements TreeInterface {
   }
   insert(value: string, node: Node) {
     let self = this
-    let type: string
     if(parseInt(value) < parseInt(node.value)) {
-      type = 'L'
       console.log(`${value} < ${node.value}. Looking at left subtree`)
       if(node.left) {
         this.insert(value, node.left)()
@@ -36,7 +27,6 @@ class BinarySearchTree implements TreeInterface {
         node.left = new Node(value)
       }
     } else {
-      type = 'R'
       console.log(`${value} >= ${node.value}. Looking at right subtree`)
       if(node.right) {
         this.insert(value, node.right)()
@@ -47,18 +37,29 @@ class BinarySearchTree implements TreeInterface {
     }
     console.log(`Unwinding Recursion`)
     return function(){
-      self.pushType(type)
       node.height = self.getNodeDepth(node)
       console.log(`Adjusting height after recursive call (node ${node.value} height to ${node.height})`)
       if(Math.abs((node.left?.height || 0) - (node.right?.height || 0)) > 1) {
-        let unbalancedType = self.subTreeTypeList.join('')
-        console.log(`unbalanced tree (root node: ${node.value}, type: ${self.subTreeTypeList.join('')})`)
-        self.treeRebalanced(node, unbalancedType)
+        console.log(`unbalanced tree (root node: ${node.value}, type: ${self.checkUnbalancedType(node)})`)
+        self.treeRebalanced(node)
       }
     }
   }
-  treeRebalanced(node: Node, type: string) {
-    switch(type) {
+  checkUnbalancedType(node: Node, needChild: boolean = true) {
+    let type = ''
+    if((node.left?.height || 0) == (node.right?.height || 0)) {
+      return type
+    }
+    if((node.left?.height || 0) > (node.right?.height || 0)) {
+      type += `L${needChild ? this.checkUnbalancedType(node.left!, false) : ''}`
+    } else {
+      type += `R${needChild ? this.checkUnbalancedType(node.right!, false) : ''}`
+    }
+    return type
+  }
+  treeRebalanced(node: Node) {
+    switch(this.checkUnbalancedType(node)) {
+      case 'L':
       case 'LL':
         console.log(`Single Rotate Right`)
         this.rotateRight(node)
@@ -75,6 +76,7 @@ class BinarySearchTree implements TreeInterface {
         this.rotateLeft(node)
         node.height = this.getNodeDepth(node)
         break
+      case 'R':
       case 'RR':
         console.log(`Single Rotate Left`)
         this.rotateLeft(node)
@@ -99,19 +101,15 @@ class BinarySearchTree implements TreeInterface {
     tmp.height = this.getNodeDepth(tmp)
     node.right = tmp
   }
-  copyNode(target: Node | null, source: Node | null) {
-    if(source && target) {
-      target.value = source.value
-      target.left = source.left
-      target.right = source.right
-      target.height = source.height
-    } else {
-      target = source
-    }
+  copyNode(target: Node, source: Node) {
+    target.value = source.value
+    target.left = source.left
+    target.right = source.right
+    target.height = source.height
   }
-  getNodeDepth(node: Node|null, depth = 0): number {
+  getNodeDepth(node: Node | null): number {
     if(node) {
-      return Math.max(node.left ? this.getNodeDepth(node.left, depth + 1) : depth + 1, node.right ? this.getNodeDepth(node.right, depth + 1) : depth + 1)
+      return Math.max(node.left ? this.getNodeDepth(node.left) : 0, node.right ? this.getNodeDepth(node.right) : 0) + 1
     } else {
       return 0
     }
