@@ -1,4 +1,4 @@
-import { Flyable } from '../04-ts-module/03-flyable'
+import { Flyable } from '../interface/03-flyable'
 abstract class Animal {
   constructor(protected name: string) {}
   abstract getName(): string

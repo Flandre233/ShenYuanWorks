@@ -1,4 +1,4 @@
-import { LinkedList } from "./interfaces"
+import { LinkedListInterface } from "./interfaces"
 
 class StringLinkedListNode {
   constructor(protected value: string | null = null, protected nextNode: StringLinkedListNode | null = null) {}
@@ -13,7 +13,7 @@ class StringLinkedListNode {
   }
 }
 
-class StringLinkedList implements LinkedList {
+class StringLinkedList implements LinkedListInterface {
   protected head = new StringLinkedListNode()
   constructor() {}
   add(value: string, index?: number){
